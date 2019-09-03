@@ -26,6 +26,10 @@ export class MessageComponent {
     this.isEditing = true;
   }
 
+  onDelete(message: IMessage) {
+    this.messageService.deleteMessage(message.id);
+  }
+
   onCancel() {
     this.isEditing = false;
   }

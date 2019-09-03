@@ -12,9 +12,9 @@
 <div class="MessageForm" (window:resize)="resize()">
   <textarea
     #message
-    class="MessageForm__input Input"
+    class="MessageForm__input"
     (keyup)="handleKeyup($event)"
     (input)="resize()" 
   ></textarea>
-  <button (click)="send()" class="MessageForm__button Button">Send</button>
+  <button (click)="send()" class="MessageForm__button">Send</button>
 </div>

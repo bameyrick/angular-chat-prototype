@@ -1,6 +1,9 @@
 @import '../styles/_variables-and-helpers';
+@import '../styles/components/_button';
+@import '../styles/components/_input';
 
 $message-avatar-size: 2.5em;
+$message-form-input-height: 2.5em;
 
 .Message {
   display: flex;
@@ -58,33 +61,25 @@ $message-avatar-size: 2.5em;
     grid-row-gap: 10px;
   }
 
+  &__editform {
+    @extend .Input;
+
+    flex-grow: 1;
+    min-height: $message-form-input-height;
+    height: $message-form-input-height;
+    max-height: $message-form-input-height * 3;
+
+    margin-right: 10px;
+    font-size: 1em;
+  }
+
   &__editbuttons {
     display: flex;
   }
   
   &__editbutton {
+    @extend .Button;
+
     margin-right: 10px;
-    width: 100px;
-    height: 40px;
-    background: #2F3337;
-    border: solid 1px #A7A7A7;
-    color: #A7A7A7;
-    user-select: none;
-    padding: 0.375rem 0.75rem;
-    line-height: 1.5;
-    outline: none;
-    
-    color: $color-grey;
-    text-transform: uppercase;
   }
-}
-
-
-textarea, textarea:focus {
-  background: #2f3337;
-  border-color: #707070;
-  color: #fff;
-  flex-grow: 1;
-  margin-right: 10px;
-  /* align-self: flex-end; */
 }

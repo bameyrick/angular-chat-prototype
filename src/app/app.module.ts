@@ -11,7 +11,7 @@ import { GroupService } from './services/group.service';
 import { MessageService } from './services/message.service';
 
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faEdit as farEdit, faTimesCircle as farTimesCircle } from '@fortawesome/free-regular-svg-icons';
+import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { AppComponent } from './app.component';
 import { MessageComponent } from './message/message.component';
 import { MessageListComponent } from './message-list/message-list.component';
@@ -41,6 +41,6 @@ const firebaseConfig = {
 })
 export class AppModule {
   constructor(private library: FaIconLibrary) {
-    library.addIcons(farEdit, farTimesCircle);
+    library.addIcons(faEdit, faTrashAlt);
   }
  }

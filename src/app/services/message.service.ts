@@ -49,6 +49,15 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
     } as IMessage)
   }
 
+  public async deleteMessage(msgId: string): Promise<void> {
+
+    this.db.collection('messages').doc(msgId).delete().then(function() {
+      console.log("Message successfully deleted!");
+  }).catch(function(error) {
+      console.error("Error removing message: ", error);
+  });
+  }
+
   public async loadPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_LIMIT): Promise<void> {
     const messages = await this.getPreviousMessagesForGroup(groupId, before, limit);
 
