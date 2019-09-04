@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 import { IGroup } from '../models';
 import { UserService } from './user.service';
@@ -18,16 +19,32 @@ export class GroupService {
   constructor(
     private db: AngularFirestore,
     private userService: UserService,
-  ) { 
+  ) {
     this.subscribeToCurrentUser();
     this.subscribeToUserGroups();
 
     this.allGroups$ = combineLatest(this.groups$, this.userGroups$, (groups, userGroups) => [...groups, ...userGroups]);
+  }
 
+  public async getGroupById(groupId: string): Promise<IGroup> {
+    return (await this.allGroups$.pipe(
+      map(groups => groups.filter(group => group.id === groupId)),
+      take(1)
+    ).toPromise())[0];
+  }
+
+  public async getUsersGroup(userId: string): Promise<IGroup> {
+    return (await this.userGroups$.pipe(
+      map(groups => {
+        console.log(groups)
+        return groups.filter(group => group.users.includes(userId));
+      }),
+      take(1)
+    ).toPromise())[0];
   }
 
   private subscribeToCurrentUser(): void {
-    this.userService.currentUser$.subscribe(id => {
+    this.userService.currentUserId$.subscribe(id => {
 
       if (id) {
         this.currentUser = id;
@@ -61,18 +78,17 @@ export class GroupService {
   private subscribeToUserGroups(): void {
     this.userGroups$ = combineLatest(this.unmapedUserGroups$, this.users$, (groups, users) => {
       return groups
-        .map(group => ({ 
+        .map(group => ({
           ...group,
           name: users[group.users[0]].displayName,
         }))
-        .filter(group => !group.users.find(id => id === this.currentUser));
     });
   }
 
   private async mapSnapshotToGroup(snapshot): Promise<IGroup[]> {
     const data: IGroup[] = await snapshot.map(async doc => {
       const group = await doc.payload.doc.data() as IGroup;
-      
+
       return {
         id: doc.payload.doc.id,
         ...group

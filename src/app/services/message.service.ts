@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QuerySnapshot } from '@angular/fire/firestore';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, combineLatest } from 'rxjs/operators';
 import { sortBy } from 'sort-by-typescript';
 
 import { UserService, GroupService } from '../services';
@@ -12,15 +12,15 @@ import { newLineString } from '../pipes/message-to-html.pipe';
 const MESSAGE_LIMIT = 30;
 
 const newLineRegex = new RegExp(newLineString, 'g');
- 
+
 @Injectable()
 export class MessageService {
   public groupMessages$:  { [key: string]: BehaviorSubject<IMessage[]> } = {};
   public newMessageSubjects: { [key: string]: Subject<IMessage> };
-  
+
   private currentUsersGroups: string[] = [];
   private groupMessages: { [key: string]: IMessage[] } = {};
-  private currentUser: string;
+  private currentUserId: string;
 
   constructor(
     private db: AngularFirestore,
@@ -35,13 +35,11 @@ export class MessageService {
 public async sendMessage(groupId: string, text: string): Promise<void> {
     const timestamp = Date.now();
 
-    debugger;
-
     this.db.collection('messages').add({
       timestamp,
       text: text.trim().replace(/[\n\r]/g, newLineString),
       groupId,
-      sender: this.currentUser,
+      sender: this.currentUserId,
     } as IMessage)
   }
 
@@ -69,16 +67,49 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
   }
 
   private async getPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_LIMIT): Promise<IMessage[]> {
-    const snapshot = await this.db.collection('messages', ref => ref
-      .where('groupId', '==', groupId)
-      .orderBy('timestamp', 'desc')
-      .startAfter(before)
-      .limit(limit)
-    ).get().toPromise();
+    const group = await this.groupService.getGroupById(groupId);
 
+    if (group.individual) {
+      const userGroup = await this.groupService.getUsersGroup(this.currentUserId);
+
+      console.log(userGroup);
+
+      const groupSnapshot = this.db.collection('messages', ref => ref
+        .where('groupId', '==', groupId)
+        .where('sender', '==', this.currentUserId)
+        .orderBy('timestamp', 'desc')
+        .startAfter(before)
+        .limit(limit)
+      ).get().toPromise();
+
+      const userGroupSnapshot = this.db.collection('messages', ref => ref
+        .where('groupId', '==', userGroup.id)
+        .where('sender', '==', group.users[0])
+        .orderBy('timestamp', 'desc')
+        .startAfter(before)
+        .limit(limit)
+      ).get().toPromise();
+
+      return (await Promise.all([
+        this.mapSnapshotToMessages(await groupSnapshot),
+        this.mapSnapshotToMessages(await userGroupSnapshot)
+      ])).reduce((a, b) => a.concat(b));
+    } else {
+      const snapshot = await this.db.collection('messages', ref => ref
+        .where('groupId', '==', groupId)
+        .orderBy('timestamp', 'desc')
+        .startAfter(before)
+        .limit(limit)
+      ).get().toPromise();
+
+      return await this.mapSnapshotToMessages(snapshot);
+    }
+  }
+
+  private async mapSnapshotToMessages(snapshot: QuerySnapshot<any>): Promise<IMessage[]> {
     return await Promise.all(snapshot.docs.map(async doc => {
       const message = doc.data();
-      
+
       return {
         id: doc.id,
         ...message,
@@ -88,7 +119,7 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
   }
 
   private subscribeToCurrentUser(): void {
-    this.userService.currentUser$.subscribe(id => this.currentUser = id);
+    this.userService.currentUserId$.subscribe(id => this.currentUserId = id);
   }
 
   private subscribeToGroups(): void {
@@ -99,7 +130,7 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
         if (!this.groupMessages[group.id]) {
           this.groupMessages[group.id] = [];
           this.groupMessages$[group.id] = new BehaviorSubject([]);
-          
+
           this.addMessagesToGroup(group.id, await this.getPreviousMessagesForGroup(group.id));
         }
       });
@@ -117,12 +148,12 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
 
   private subscribeToNewMessages(): void {
     this.db.collection('messages', ref => ref.where('timestamp', '>', Date.now())).stateChanges(['added']).pipe(
-      map(actions => 
+      map(actions =>
         actions.map(action => {
           const data = action.payload.doc.data() as IMessage;
           const id = action.payload.doc.id;
 
-          return { 
+          return {
             id,
             ...data,
             text: data.text.replace(newLineRegex, '\\n'),

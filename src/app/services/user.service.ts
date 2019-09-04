@@ -7,16 +7,16 @@ import { IUser } from '../models';
 @Injectable()
 export class UserService {
   public users$  = new BehaviorSubject<{ [uid: string]: IUser }>({});
-  public currentUser$ = new BehaviorSubject<string>('');
+  public currentUserId$ = new BehaviorSubject<string>('');
 
   private randomUserPicked = false;
-  
-  constructor(private db: AngularFirestore) { 
+
+  constructor(private db: AngularFirestore) {
     this.subscribeToUsers();
   }
 
   public setCurrentUser(id: string): void {
-    this.currentUser$.next(id);
+    this.currentUserId$.next(id);
   }
 
   private subscribeToUsers(): void {

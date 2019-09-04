@@ -56,7 +56,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
       this.setGroup();
     });
 
-    this.userService.currentUser$.subscribe(id => this.currentUser = id);
+    this.userService.currentUserId$.subscribe(id => this.currentUser = id);
   }
 
   ngAfterViewInit() {
@@ -69,7 +69,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
   public onScroll(): void {
     const scrollPosition = this.scrollContainer.nativeElement.scrollTop;
-  
+
     if (!this.loadingMessages) {
       const scrollDirection = scrollPosition > this.previousScrollY ? 1 : -1;
 
@@ -83,8 +83,8 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         });
       }
     }
-    
-    
+
+
     this.previousScrollY = scrollPosition;
   }
 
@@ -130,10 +130,10 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
       if (messageElement) {
         const scrollContainer = this.scrollContainer.nativeElement;
-  
+
         const top = messageElement.getBoundingClientRect().top;
         const scrollContainerTop = scrollContainer.getBoundingClientRect().top;
-  
+
         scrollContainer.scrollTop = top - scrollContainerTop - 20;
       }
     }

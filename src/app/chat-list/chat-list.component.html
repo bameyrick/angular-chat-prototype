@@ -8,7 +8,7 @@
 
   <h2 class="ChatList__heading">Users</h2>
   <ul class="ChatList__items">
-    <li class="ChatList__item" *ngFor="let chat of userChats$ | async | sortBy: 'name^'">
+    <li class="ChatList__item" *ngFor="let chat of userChats$ | async | doesNotInclude: 'users' : (currentUserId$ | async) | sortBy: 'name^'">
       <a class="ChatList__link" [ngClass]="{ 'ChatList__link--current': chat.id === id }" [routerLink]="['/chat', chat.id]">{{ chat.name }}</a>
     </li>
   </ul>
