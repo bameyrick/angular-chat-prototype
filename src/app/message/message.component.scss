@@ -20,7 +20,7 @@ $message-form-input-height: 2.5em;
   &__avatar {
     width: $message-avatar-size;
     height: $message-avatar-size;
-    
+
     border-radius: 50%;
   }
 
@@ -34,15 +34,16 @@ $message-form-input-height: 2.5em;
     margin: 0 0 $spacing / 2;
     font-size: .9em;
   }
-  
+
   &__button {
-    width: 40px;
-    background: #2F3337;
-    color: #A7A7A7;
+    @include button-reset;
+
+    margin: 0 0 0 $spacing / 2;
+
+    color: $color-grey;
     border: none;
     font-size: 1rem;
     line-height: 1.5;
-    outline: none;
   }
 
   &__time {
@@ -74,7 +75,7 @@ $message-form-input-height: 2.5em;
   &__editbuttons {
     display: flex;
   }
-  
+
   &__editbutton {
     @extend .Button;
 
