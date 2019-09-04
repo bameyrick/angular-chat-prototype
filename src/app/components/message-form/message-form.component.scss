@@ -27,5 +27,8 @@ $message-form-input-height: 2.5em;
 
   &__button {
     @extend .Button;
+
+    height: 3em;
+    align-self: flex-end;
   }
 }

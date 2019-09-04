@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
+
 import { MessageService } from '../../services';
 import { TextareaInputComponent } from '../../shared/textarea-input/textarea-input.component';
 
@@ -22,17 +23,14 @@ export class MessageFormComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe(route => {
       this.id = route.get('id');
-    })
+    });
   }
 
   public send() {
-    const message = this.myTextarea.getText();
-
-    this.messageService.sendMessage(this.id, message);
+    this.messageService.sendMessage(this.id, this.message);
 
     this.messageSent.emit();
 
     this.myTextarea.reset();
   }
-
 }

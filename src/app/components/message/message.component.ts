@@ -21,8 +21,6 @@ export class MessageComponent implements OnChanges {
   public isEditing = false;
   public editableMessage: string;
 
-  private id: string;
-
   constructor(private messageService: MessageService) { }
 
   ngOnChanges(changes: SimpleChanges) {

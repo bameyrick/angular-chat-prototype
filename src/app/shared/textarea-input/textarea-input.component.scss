@@ -3,17 +3,19 @@
 
 $message-form-input-height: 2.5em;
 
-.txta-wrapper {
-    display: flex;
+:host {
+  flex: 1 1 auto;
 }
 
 .textarea {
-    @extend .Input;
-    
-    flex: 1;
-    min-height: $message-form-input-height;
-    height: $message-form-input-height;
-    max-height: $message-form-input-height * 5;
-    resize: none;
-    font-size: 1em;
+  @extend .Input;
+
+  width: 100%;
+
+  min-height: $message-form-input-height;
+  height: $message-form-input-height;
+  max-height: $message-form-input-height * 5;
+
+  resize: none;
+  font-size: 1em;
 }

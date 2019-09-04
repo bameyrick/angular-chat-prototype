@@ -1,4 +1,4 @@
 <div class="MessageForm">
-  <app-textarea-input [text]="testText" class="MessageForm__textarea"></app-textarea-input>
+  <app-textarea-input [(text)]="message" class="MessageForm__textarea" (enter)="send()"></app-textarea-input>
   <button (click)="send()" class="MessageForm__button">Send</button>
 </div>

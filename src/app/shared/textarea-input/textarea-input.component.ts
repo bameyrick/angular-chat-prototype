@@ -7,9 +7,12 @@ import { didChange } from 'src/app/utils';
   styleUrls: ['./textarea-input.component.scss']
 })
 export class TextareaInputComponent implements OnChanges {
-  @ViewChild('textarea',  { read: ElementRef, static: false}) myTextarea: ElementRef;
+  @ViewChild('textarea',  { read: ElementRef, static: false}) textarea: ElementRef;
 
   @Input() text: string = '';
+  @Output() textChange = new EventEmitter<string>();
+
+  @Output() enter = new EventEmitter<void>();
 
   ngOnChanges(changes: SimpleChanges) {
     if (didChange(changes.text)) {
@@ -20,21 +23,28 @@ export class TextareaInputComponent implements OnChanges {
   public handleKeyup($event: KeyboardEvent): void {
     if ($event.keyCode === 13) {
       if ($event.ctrlKey) {
-        this.myTextarea.nativeElement.value = this.myTextarea.nativeElement.value + '\n';
+        this.textarea.nativeElement.value = this.textarea.nativeElement.value + '\n';
+      } else {
+        this.enter.emit();
       }
     }
   }
 
-  public resize(): void {
-    this.myTextarea.nativeElement.style.height = '1px';
-    const newHeight = this.myTextarea.nativeElement.scrollHeight + 2;
+  public onInput(): void {
+    this.textChange.emit(this.textarea.nativeElement.value);
+    this.resize();
+  }
 
-    this.myTextarea.nativeElement.style.height = `${newHeight}px`;
-    this.myTextarea.nativeElement.scrollTop = newHeight;
+  public resize(): void {
+    this.textarea.nativeElement.style.height = '1px';
+    const newHeight = this.textarea.nativeElement.scrollHeight + 2;
+
+    this.textarea.nativeElement.style.height = `${newHeight}px`;
+    this.textarea.nativeElement.scrollTop = newHeight;
   }
 
   public reset(): void {
-    this.myTextarea.nativeElement.value = '';
+    this.textarea.nativeElement.value = '';
 
     this.resize();
   }
