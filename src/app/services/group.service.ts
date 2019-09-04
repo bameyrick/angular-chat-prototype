@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, take, skipWhile } from 'rxjs/operators';
 
 import { IGroup } from '../models';
 import { UserService } from './user.service';
@@ -12,7 +12,7 @@ export class GroupService {
   public userGroups$: Observable<IGroup[]>;
   public allGroups$: Observable<IGroup[]>;
 
-  private unmapedUserGroups$ = new BehaviorSubject<IGroup[]>([]);
+  private unmappedUserGroups$ = new BehaviorSubject<IGroup[]>([]);
   private users$ = this.userService.users$;
   private currentUser: string;
 
@@ -35,6 +35,7 @@ export class GroupService {
 
   public async getUsersGroup(userId: string): Promise<IGroup> {
     return (await this.userGroups$.pipe(
+      skipWhile(groups => groups.length === 0),
       map(groups => groups.filter(group => group.users.includes(userId))),
       take(1)
     ).toPromise())[0];
@@ -68,12 +69,12 @@ export class GroupService {
       .collection('groups', ref => ref.where('individual', '==', true))
       .snapshotChanges()
       .subscribe(async snapshot => {
-        this.unmapedUserGroups$.next(await this.mapSnapshotToGroup(snapshot));
+        this.unmappedUserGroups$.next(await this.mapSnapshotToGroup(snapshot));
       });
   }
 
   private subscribeToUserGroups(): void {
-    this.userGroups$ = combineLatest(this.unmapedUserGroups$, this.users$, (groups, users) => {
+    this.userGroups$ = combineLatest(this.unmappedUserGroups$, this.users$, (groups, users) => {
       return groups
         .map(group => ({
           ...group,
