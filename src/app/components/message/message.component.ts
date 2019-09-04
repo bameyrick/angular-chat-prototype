@@ -29,23 +29,20 @@ export class MessageComponent implements OnChanges {
     }
   }
 
-  public onEdit(): void {
+  public edit(): void {
     this.isEditing = true;
   }
 
-  public onDelete(message: IMessage): void {
-    this.messageService.deleteMessage(this.groupId, message.id);
+  public delete(message: IMessage): void {
+    this.messageService.deleteMessage(this.groupId, this.message.id);
   }
 
-  public onCancel(): void {
+  public cancel(): void {
     this.isEditing = false;
   }
 
-  public onUpdate(): void {
-    const message = this.myTextarea.getText();
-
-    this.messageService.updateMessage(this.groupId, this.message.id, message);
-
+  public save(): void {
+    this.messageService.updateMessage(this.groupId, this.message.id, this.editableMessage);
 
     this.isEditing = false;
 

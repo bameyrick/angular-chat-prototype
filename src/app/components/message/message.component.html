@@ -6,17 +6,17 @@
   <div class="Message__main">
     <header class="Message__header">
       <strong>{{ user.displayName }}</strong>&nbsp;<small class="Message__time">{{ message.timestamp | date: 'HH:mm' }}</small>
-      <button class="Message__button" (click)="onEdit(message)" *ngIf="contentEditable"><fa-icon [icon]="['far', 'edit']"></fa-icon></button>
-      <button class="Message__button" (click)="onDelete(message)" *ngIf="contentEditable"><fa-icon [icon]="['far', 'trash-alt']"></fa-icon></button>
+      <button class="Message__button" (click)="edit()" *ngIf="contentEditable"><fa-icon [icon]="['far', 'edit']"></fa-icon></button>
+      <button class="Message__button" (click)="delete()" *ngIf="contentEditable"><fa-icon [icon]="['far', 'trash-alt']"></fa-icon></button>
     </header>
     <div *ngIf="!contentEditable || (contentEditable && !isEditing)" class="Message__body" [innerHTML]="message.text | messageToHtml"></div>
 
     <div *ngIf="contentEditable && isEditing" class="Message__editmode">
-      <app-textarea-input #userInput [text]="editableMessage" class="MessageForm__textarea"></app-textarea-input>
+      <app-textarea-input #userInput [(text)]="editableMessage" class="MessageForm__textarea" (enter)="save()"></app-textarea-input>
 
       <div class="Message__editbuttons">
-        <button class="Message__editbutton" (click)="onCancel()">Cancel</button>
-        <button class="Message__editbutton" (click)="onUpdate(message.id)">Save</button>
+        <button class="Message__editbutton" (click)="cancel()">Cancel</button>
+        <button class="Message__editbutton" (click)="save()">Save</button>
       </div>
     </div>
   </div>
