@@ -72,8 +72,6 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
     if (group.individual) {
       const userGroup = await this.groupService.getUsersGroup(this.currentUserId);
 
-      console.log(userGroup);
-
       const groupSnapshot = this.db.collection('messages', ref => ref
         .where('groupId', '==', groupId)
         .where('sender', '==', this.currentUserId)
