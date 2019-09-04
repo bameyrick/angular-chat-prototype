@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivationEnd } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
-import { GroupService } from '../services/group.service';
-
+import { GroupService, UserService } from '../services';
 
 @Component({
   selector: 'app-chat-list',
@@ -15,10 +12,11 @@ export class ChatListComponent implements OnInit {
   public id: string;
   public groupChats$ = this.groupService.groups$;
   public userChats$ = this.groupService.userGroups$;
-
+  public currentUserId$ = this.userService.currentUserId$;
 
   constructor(
-    private groupService: GroupService, 
+    private groupService: GroupService,
+    private userService: UserService,
     private router: Router,
   ) { }
 

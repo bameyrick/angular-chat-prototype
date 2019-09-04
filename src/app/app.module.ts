@@ -21,7 +21,8 @@ import { ChatListComponent } from './chat-list/chat-list.component';
 
 import { FilterByPipe } from './pipes/filter-by.pipe';
 import { MessageToHtmlPipe } from './pipes/message-to-html.pipe';
-import { MessageToInputPipe } from './pipes/message-to-input.pipe';
+import { SortByPipe } from './pipes/sort-by.pipe';
+import { DoesNotIncludePipe } from './pipes/does-not-include.pipe';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCEwBcOwZ8FIDvIfEjmS0r5jgLnjwSqxLU",
@@ -36,7 +37,7 @@ const firebaseConfig = {
 @NgModule({
   imports:      [ BrowserModule, FormsModule, SharedModule, FontAwesomeModule, AppRoutingModule, AngularFireModule.initializeApp(firebaseConfig), AngularFirestoreModule ],
   exports: [AppRoutingModule],
-  declarations: [ AppComponent, MessageComponent, MessageListComponent, MessageFormComponent, ChatListComponent, FilterByPipe, MessageToHtmlPipe, MessageToInputPipe ],
+  declarations: [ AppComponent, MessageComponent, MessageListComponent, MessageFormComponent, ChatListComponent, FilterByPipe, MessageToHtmlPipe, SortByPipe, DoesNotIncludePipe ],
   bootstrap:    [ AppComponent ],
   providers: [MessageService, UserService, GroupService]
 })
