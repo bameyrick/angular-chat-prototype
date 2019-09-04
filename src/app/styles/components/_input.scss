@@ -9,4 +9,9 @@
   &:focus {
     outline: none;
   }
+
+  &__option {
+    background: $color-navy;
+    color: inherit;
+  }
 }

@@ -8,12 +8,9 @@ export const newLineRegex = new RegExp('\\\\n', 'g');
   name: 'messageToHtml'
 })
 export class MessageToHtmlPipe implements PipeTransform {
-
   constructor(protected sanitizer: DomSanitizer) {}
 
   transform(value: string): any {
-    console.log(value);
     return this.sanitizer.bypassSecurityTrustHtml(`<p>${value.replace(newLineRegex, '</p><p>')}</p>`);
   }
-
 }

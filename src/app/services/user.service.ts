@@ -25,9 +25,11 @@ export class UserService {
 
       snapshot.forEach(doc => {
         const data = doc.payload.doc.data() as IUser;
+        const id = doc.payload.doc.id;
 
-        result[doc.payload.doc.id] = {
+        result[id] = {
           ...data,
+          id,
           initials: data.displayName
             .trim()
             .replace(/\s\s+/g, '')

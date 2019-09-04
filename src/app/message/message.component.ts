@@ -3,6 +3,7 @@ import { MessageService } from '../services/message.service';
 import { IMessage, IUser } from '../models';
 import { TextareaInputComponent } from '../shared/textarea-input/textarea-input.component';
 import { newLineRegex } from '../pipes/message-to-html.pipe';
+import { didChange } from '../utils';
 
 @Component({
   selector: 'app-message',
@@ -25,29 +26,29 @@ export class MessageComponent implements OnChanges {
   constructor(private messageService: MessageService) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.message.currentValue !== changes.message.previousValue) {
+    if (didChange(changes.message)) {
       this.editableMessage = this.message.text.replace(newLineRegex, '\n');
     }
   }
 
-  onEdit() {
+  public onEdit(): void {
     this.isEditing = true;
   }
 
-  onDelete(message: IMessage) {
+  public onDelete(message: IMessage): void {
     this.messageService.deleteMessage(this.groupId, message.id);
   }
 
-  onCancel() {
+  public onCancel(): void {
     this.isEditing = false;
   }
 
-  public onUpdate() {
+  public onUpdate(): void {
     const message = this.myTextarea.getText();
 
     this.messageService.updateMessage(this.groupId, this.message.id, message);
 
-    
+
     this.isEditing = false;
 
     this.myTextarea.reset();

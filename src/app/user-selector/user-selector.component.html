@@ -1,0 +1,7 @@
+<div class="CurrentUser">
+    <label for="current-user">Current user</label>
+    <select class="CurrentUser__input Input" id="current-user" [ngModel]="currentUserId$ | async" (ngModelChange)="onChange($event)">
+      <option  class="Input__option" [ngValue]="user.id" *ngFor="let user of users$ | async | sortBy: 'displayName^' ">{{ user.displayName }}</option>
+    </select>
+</div>
+
