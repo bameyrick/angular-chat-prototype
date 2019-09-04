@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 
-import { UserService } from '../services';
+import { UserService } from '../../services';
 
 @Component({
   selector: 'app-user-selector',

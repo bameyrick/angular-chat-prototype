@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivationEnd } from '@angular/router';
 
-import { GroupService, UserService } from '../services';
+import { GroupService, UserService } from '../../services';
 
 @Component({
   selector: 'app-chat-list',

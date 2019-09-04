@@ -14,16 +14,16 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
-import { MessageComponent } from './message/message.component';
-import { MessageListComponent } from './message-list/message-list.component';
-import { MessageFormComponent } from './message-form/message-form.component';
-import { ChatListComponent } from './chat-list/chat-list.component';
+import { MessageComponent } from './components/message/message.component';
+import { MessageListComponent } from './components/message-list/message-list.component';
+import { MessageFormComponent } from './components/message-form/message-form.component';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
 
 import { FilterByPipe } from './pipes/filter-by.pipe';
 import { MessageToHtmlPipe } from './pipes/message-to-html.pipe';
 import { SortByPipe } from './pipes/sort-by.pipe';
 import { DoesNotIncludePipe } from './pipes/does-not-include.pipe';
-import { UserSelectorComponent } from './user-selector/user-selector.component';
+import { UserSelectorComponent } from './components/user-selector/user-selector.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCEwBcOwZ8FIDvIfEjmS0r5jgLnjwSqxLU",

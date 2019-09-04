@@ -1,9 +1,9 @@
 import { Component, Input, ViewEncapsulation, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
-import { MessageService } from '../services/message.service';
-import { IMessage, IUser } from '../models';
-import { TextareaInputComponent } from '../shared/textarea-input/textarea-input.component';
-import { newLineRegex } from '../pipes/message-to-html.pipe';
-import { didChange } from '../utils';
+import { MessageService } from '../../services/message.service';
+import { IMessage, IUser } from '../../models';
+import { TextareaInputComponent } from '../../shared/textarea-input/textarea-input.component';
+import { newLineRegex } from '../../pipes/message-to-html.pipe';
+import { didChange } from '../../utils';
 
 @Component({
   selector: 'app-message',

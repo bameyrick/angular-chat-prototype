@@ -2,15 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren, 
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { sortBy } from 'sort-by-typescript';
+import { GroupService } from '../../services/group.service';
+import { MessageService } from '../../services/message.service';
+import { UserService } from '../../services/user.service';
 
-import { GroupService } from '../services/group.service';
-import { MessageService } from '../services/message.service';
-import { UserService } from '../services/user.service';
-
-import { IGroup, IMessage } from '../models';
-
-const LOAD_THRESHOLD = 50;
+import { IGroup, IMessage } from '../../models';
 
 @Component({
   selector: 'app-message-list',

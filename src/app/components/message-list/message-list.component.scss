@@ -1,4 +1,4 @@
-@import '../styles/_variables-and-helpers';
+@import '../../styles/_variables-and-helpers';
 
 :host {
   display: flex;
@@ -30,7 +30,7 @@
 
   &__message {
     display: block;
-    
+
     &:not(:last-child) {
       margin: 0 0 $spacing;
     }
