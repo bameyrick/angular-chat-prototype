@@ -1,20 +1,4 @@
-<!-- <div class="mf-wrapper">
-  <div class="form-group message-form">
-    <textarea type="text"
-           class="form-control"
-           placeholder="Press Enter to send message"
-           #message
-           (keyup.enter)="onEnter(message.value);message.value=''"></textarea>
-    <button (click)="onEnter(message.value);message.value=''">Send</button>
-  </div>
-</div> -->
-
-<div class="MessageForm" (window:resize)="resize()">
-  <textarea
-    #message
-    class="MessageForm__input"
-    (keyup)="handleKeyup($event)"
-    (input)="resize()" 
-  ></textarea>
+<div class="MessageForm">
+  <app-textarea-input [text]="testText" class="MessageForm__textarea"></app-textarea-input>
   <button (click)="send()" class="MessageForm__button">Send</button>
 </div>

@@ -13,6 +13,7 @@ import { MessageService } from './services/message.service';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { AppComponent } from './app.component';
+import { SharedModule } from './shared/shared.module';
 import { MessageComponent } from './message/message.component';
 import { MessageListComponent } from './message-list/message-list.component';
 import { MessageFormComponent } from './message-form/message-form.component';
@@ -33,7 +34,7 @@ const firebaseConfig = {
 };
 
 @NgModule({
-  imports:      [ BrowserModule, FormsModule, FontAwesomeModule, AppRoutingModule, AngularFireModule.initializeApp(firebaseConfig), AngularFirestoreModule ],
+  imports:      [ BrowserModule, FormsModule, SharedModule, FontAwesomeModule, AppRoutingModule, AngularFireModule.initializeApp(firebaseConfig), AngularFirestoreModule ],
   exports: [AppRoutingModule],
   declarations: [ AppComponent, MessageComponent, MessageListComponent, MessageFormComponent, ChatListComponent, FilterByPipe, MessageToHtmlPipe, MessageToInputPipe ],
   bootstrap:    [ AppComponent ],

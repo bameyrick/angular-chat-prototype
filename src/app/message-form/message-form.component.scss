@@ -20,6 +20,11 @@ $message-form-input-height: 2.5em;
     font-size: 1em;
   }
 
+  &__textarea {
+    flex: 1 0 auto;
+    margin-right: 10px;
+  }
+
   &__button {
     @extend .Button;
   }

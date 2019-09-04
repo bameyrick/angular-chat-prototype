@@ -9,7 +9,9 @@
       *ngFor="let message of messages$ | async " 
       [message]="message" 
       [user]="(users$ | async)[message.sender]"
-      [contentEditable]="message.sender === currentUser ? true : false"></app-message>
+      [contentEditable]="message.sender === currentUser ? true : false"
+      [groupId]="group?.id"
+    ></app-message>
   </div>
   <app-message-form class="MessageList__form" (messageSent)="messageSent()" ></app-message-form>
 

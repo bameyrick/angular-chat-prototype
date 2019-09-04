@@ -61,17 +61,15 @@ $message-form-input-height: 2.5em;
     grid-row-gap: 10px;
   }
 
-  &__editform {
-    @extend .Input;
+  // &__editform {
+  //   @extend .Input;
 
-    flex-grow: 1;
-    min-height: $message-form-input-height;
-    height: $message-form-input-height;
-    max-height: $message-form-input-height * 3;
-
-    margin-right: 10px;
-    font-size: 1em;
-  }
+  //   flex-grow: 1;
+  //   min-height: $message-form-input-height;
+  //   height: $message-form-input-height;
+  //   max-height: $message-form-input-height * 3;
+  //   font-size: 1em;
+  // }
 
   &__editbuttons {
     display: flex;
@@ -81,5 +79,9 @@ $message-form-input-height: 2.5em;
     @extend .Button;
 
     margin-right: 10px;
+  }
+
+  &__deleteButton {
+    display: none;
   }
 }

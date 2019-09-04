@@ -13,13 +13,16 @@
     <div *ngIf="!contentEditable || (contentEditable && !isEditing)" class="Message__body" [innerHTML]="message.text | messageToHtml"></div>
 
     <div *ngIf="contentEditable && isEditing" class="Message__editmode" (window:resize)="resize()">
-      <textarea
+      <!-- <textarea
         #userInput
         [(ngModel)]="message.text"
         (keyup)="handleKeyup($event)"
         (input)="resize()"
         class="Message__editform"
-      ></textarea>
+      ></textarea> -->
+
+      <app-textarea-input #userInput [text]="message.text" class="MessageForm__textarea"></app-textarea-input>
+
       <div class="Message__editbuttons">
         <button class="Message__editbutton" (click)="onCancel()">Cancel</button>
         <button class="Message__editbutton" (click)="onUpdate(message.id)">Save</button>

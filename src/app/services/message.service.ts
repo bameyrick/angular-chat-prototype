@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QuerySnapshot } from '@angular/fire/firestore';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { sortBy } from 'sort-by-typescript';
 
 import { UserService, GroupService } from '../services';
@@ -41,27 +41,38 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
     } as IMessage)
   }
 
-  public async updateMessage(msgId: string, msgTxt: string): Promise<void> {
+  public async updateMessage(groupId: string, msgId: string, msgTxt: string): Promise<void> {
     // const timestamp = Date.now();
 
     this.db.collection('messages').doc(msgId).update({
       text: msgTxt,
     } as IMessage)
+      .then(async () => {
+        const messages = await this.getCurrentGroupMessages(groupId);
+
+        const message = messages.find(msg => msg.id === msgId);
+        message.text = msgTxt;
+
+        this.updateGroupMessages(groupId, messages);
+      });
   }
 
-  public async deleteMessage(msgId: string): Promise<void> {
-
-    this.db.collection('messages').doc(msgId).delete().then(function() {
-      console.log("Message successfully deleted!");
-  }).catch(function(error) {
-      console.error("Error removing message: ", error);
-  });
+  public async deleteMessage(groupId: string, msgId: string): Promise<void> {
+    this.db.collection('messages').doc(msgId).delete().then(async () => {
+      this.updateGroupMessages(groupId, (await this.getCurrentGroupMessages(groupId)).filter(message => message.id !== msgId));
+    }).catch(function(error) {
+        console.error("Error removing message: ", error);
+    });
   }
 
   public async loadPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_LIMIT): Promise<void> {
     const messages = await this.getPreviousMessagesForGroup(groupId, before, limit);
 
     this.addMessagesToGroup(groupId, messages);
+  }
+
+  private async getCurrentGroupMessages(groupId: string): Promise<IMessage[]> {
+    return await this.groupMessages$[groupId].pipe(take(1)).toPromise();
   }
 
   private async getPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_LIMIT): Promise<IMessage[]> {
@@ -105,9 +116,13 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
     const newMessages = Array.from(new Set([...this.groupMessages[groupId], ...messages])).sort(sortBy('timestamp'));
 
     if (newMessages.map(message => message.id).join('') !== this.groupMessages[groupId].map(message => message.id).join('')) {
-      this.groupMessages[groupId] = newMessages;
-      this.groupMessages$[groupId].next(newMessages);
+      this.updateGroupMessages(groupId, newMessages);
     }
+  }
+
+  private updateGroupMessages(groupId: string, messages: IMessage[]) {    
+    this.groupMessages[groupId] = messages;
+    this.groupMessages$[groupId].next(messages);
   }
 
   private subscribeToNewMessages(): void {

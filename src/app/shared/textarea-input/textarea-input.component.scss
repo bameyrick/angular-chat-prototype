@@ -1,0 +1,19 @@
+@import '../../styles/_variables-and-helpers';
+@import '../../styles/components/_input';
+
+$message-form-input-height: 2.5em;
+
+.txta-wrapper {
+    display: flex;
+}
+
+.textarea {
+    @extend .Input;
+    
+    flex: 1;
+    min-height: $message-form-input-height;
+    height: $message-form-input-height;
+    max-height: $message-form-input-height * 5;
+    resize: none;
+    font-size: 1em;
+}

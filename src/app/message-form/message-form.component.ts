@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, ElementRef } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
 import { MessageService } from '../services/message.service';
+import { TextareaInputComponent } from '../shared/textarea-input/textarea-input.component';
 
 @Component({
   selector: 'app-message-form',
@@ -8,9 +9,13 @@ import { MessageService } from '../services/message.service';
   styleUrls: ['./message-form.component.scss']
 })
 export class MessageFormComponent implements OnInit {
-  @ViewChild('message', { static: false }) message: ElementRef;
+  // @ViewChild('message', { static: false }) message: ElementRef;
+  @ViewChild(TextareaInputComponent,  {static: false}) myTextarea: any;
 
   @Output() messageSent = new EventEmitter();
+
+  testText:string = '';
+  message: string;
 
   private id: string;
 
@@ -21,34 +26,15 @@ export class MessageFormComponent implements OnInit {
       this.id = route.get('id');
     })
   }
-
-  public handleKeyup($event: KeyboardEvent): void {
-    if ($event.keyCode === 13) {
-      if ($event.ctrlKey) {
-        this.message.nativeElement.value = this.message.nativeElement.value + '\n';
-      } else {
-        this.send();
-      }
-    }
-  }
-
+    
   public send() {
-    const message = this.message.nativeElement.value;
+    const message = this.myTextarea.getText();
 
     this.messageService.sendMessage(this.id, message);
 
-    this.message.nativeElement.value = '';
-
-    this.resize();
-
     this.messageSent.emit();
+
+    this.myTextarea.reset();
   }
 
-  public resize() {
-    this.message.nativeElement.style.height = '1px';
-    const newHeight = this.message.nativeElement.scrollHeight + 2;
-
-    this.message.nativeElement.style.height = `${newHeight}px`;
-    this.message.nativeElement.scrollTop = newHeight;
-  }
 }
