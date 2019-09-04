@@ -7,11 +7,9 @@ import { sortBy } from 'sort-by-typescript';
 import { UserService, GroupService } from '../services';
 import { IMessage } from '../models';
 
-import { newLineString } from '../pipes/message-to-html.pipe';
+import { newLineString, newLineRegex } from '../pipes/message-to-html.pipe';
 
 const MESSAGE_LIMIT = 30;
-
-const newLineRegex = new RegExp(newLineString, 'g');
 
 @Injectable()
 export class MessageService {
@@ -37,13 +35,14 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
 
     this.db.collection('messages').add({
       timestamp,
-      text: text.trim().replace(/[\n\r]/g, newLineString),
+      text: this.sanitiseMessageText(text),
       groupId,
       sender: this.currentUserId,
     } as IMessage)
   }
 
   public async updateMessage(groupId: string, msgId: string, msgTxt: string): Promise<void> {
+    msgTxt = this.sanitiseMessageText(msgTxt);
     // const timestamp = Date.now();
 
     this.db.collection('messages').doc(msgId).update({
@@ -58,6 +57,7 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
         this.updateGroupMessages(groupId, messages);
       });
   }
+  
 
   public async deleteMessage(groupId: string, msgId: string): Promise<void> {
     this.db.collection('messages').doc(msgId).delete().then(async () => {
@@ -71,6 +71,10 @@ public async sendMessage(groupId: string, text: string): Promise<void> {
     const messages = await this.getPreviousMessagesForGroup(groupId, before, limit);
 
     this.addMessagesToGroup(groupId, messages);
+  }
+
+  private sanitiseMessageText(message: string): string {
+    return message.trim().replace(/[\n\r]/g, newLineString);
   }
 
   private async getCurrentGroupMessages(groupId: string): Promise<IMessage[]> {

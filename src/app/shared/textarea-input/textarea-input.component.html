@@ -1,4 +1,4 @@
 
 <div class="txta-wrapper">
-    <textarea #textarea [(ngModel)]="text" class="textarea" (ngModelChange)="resize()" (keyup)="handleKeyup($event)"></textarea>
+    <textarea #textarea [(ngModel)]="text" class="textarea" (input)="resize()" (keyup)="handleKeyup($event)"></textarea>
 </div>

@@ -1,16 +1,20 @@
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-textarea-input',
   templateUrl: './textarea-input.component.html',
   styleUrls: ['./textarea-input.component.scss']
 })
-export class TextareaInputComponent {
+export class TextareaInputComponent implements OnChanges {
   @ViewChild('textarea',  { read: ElementRef, static: false}) myTextarea: ElementRef;
 
   @Input() text: string = '';
 
-  constructor() { }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.text.currentValue !== changes.text.previousValue) {
+      setTimeout(() => this.resize());
+    }
+  }
 
   getText(): string {
     return this.text;
@@ -22,7 +26,7 @@ export class TextareaInputComponent {
 
   public handleKeyup($event: KeyboardEvent): void {
     if ($event.keyCode === 13) {
-      if ($event.ctrlKey || $event.shiftKey) {
+      if ($event.ctrlKey) {
         this.myTextarea.nativeElement.value = this.myTextarea.nativeElement.value + '\n';
       } 
     }

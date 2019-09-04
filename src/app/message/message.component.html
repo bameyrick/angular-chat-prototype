@@ -9,19 +9,10 @@
       <button class="Message__button" (click)="onEdit(message)" *ngIf="contentEditable"><fa-icon [icon]="['far', 'edit']"></fa-icon></button>
       <button class="Message__button" (click)="onDelete(message)" *ngIf="contentEditable"><fa-icon [icon]="['far', 'trash-alt']"></fa-icon></button>
     </header>
-    
     <div *ngIf="!contentEditable || (contentEditable && !isEditing)" class="Message__body" [innerHTML]="message.text | messageToHtml"></div>
 
-    <div *ngIf="contentEditable && isEditing" class="Message__editmode" (window:resize)="resize()">
-      <!-- <textarea
-        #userInput
-        [(ngModel)]="message.text"
-        (keyup)="handleKeyup($event)"
-        (input)="resize()"
-        class="Message__editform"
-      ></textarea> -->
-
-      <app-textarea-input #userInput [text]="message.text" class="MessageForm__textarea"></app-textarea-input>
+    <div *ngIf="contentEditable && isEditing" class="Message__editmode">
+      <app-textarea-input #userInput [text]="editableMessage" class="MessageForm__textarea"></app-textarea-input>
 
       <div class="Message__editbuttons">
         <button class="Message__editbutton" (click)="onCancel()">Cancel</button>

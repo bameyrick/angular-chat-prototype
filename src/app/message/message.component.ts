@@ -1,10 +1,8 @@
-import { Component, Input, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute} from '@angular/router';
-
-import { Message } from '../message';
+import { Component, Input, ViewEncapsulation, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { MessageService } from '../services/message.service';
-import { IMessage } from '../models';
+import { IMessage, IUser } from '../models';
 import { TextareaInputComponent } from '../shared/textarea-input/textarea-input.component';
+import { newLineRegex } from '../pipes/message-to-html.pipe';
 
 @Component({
   selector: 'app-message',
@@ -12,20 +10,27 @@ import { TextareaInputComponent } from '../shared/textarea-input/textarea-input.
   styleUrls: ['./message.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class MessageComponent {
-  @Input() message;
-  @Input() user;
-  @Input() contentEditable;
+export class MessageComponent implements OnChanges {
+  @Input() message: IMessage;
+  @Input() user: IUser;
+  @Input() contentEditable: boolean;
   @Input() groupId: string;
-  // @ViewChild('userInput', { static: false }) userInput: ElementRef;
   @ViewChild(TextareaInputComponent,  { static: false}) myTextarea: any;
 
   public isEditing = false;
+  public editableMessage: string;
+
   private id: string;
 
-  constructor(private messageService: MessageService, private route: ActivatedRoute) { }
+  constructor(private messageService: MessageService) { }
 
-  onEdit(message: IMessage) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.message.currentValue !== changes.message.previousValue) {
+      this.editableMessage = this.message.text.replace(newLineRegex, '\n');
+    }
+  }
+
+  onEdit() {
     this.isEditing = true;
   }
 
@@ -37,16 +42,6 @@ export class MessageComponent {
     this.isEditing = false;
   }
 
-  // public handleKeyup($event: KeyboardEvent): void {
-  //   if ($event.keyCode === 13) {
-  //     if ($event.ctrlKey) {
-  //       this.userInput.nativeElement.value = this.userInput.nativeElement.value + '\n';
-  //     } else {
-  //       this.onUpdate();
-  //     }
-  //   }
-  // }
-
   public onUpdate() {
     const message = this.myTextarea.getText();
 
@@ -57,12 +52,4 @@ export class MessageComponent {
 
     this.myTextarea.reset();
   }
-
-  // public resize() {
-  //   this.userInput.nativeElement.style.height = '1px';
-  //   const newHeight = this.userInput.nativeElement.scrollHeight + 2;
-
-  //   this.userInput.nativeElement.style.height = `${newHeight}px`;
-  //   this.userInput.nativeElement.scrollTop = newHeight;
-  // }
 }
