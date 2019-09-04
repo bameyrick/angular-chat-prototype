@@ -10,6 +10,8 @@ import { IMessage } from '../models';
 import { newLineString } from '../pipes/message-to-html.pipe';
 
 const MESSAGE_LIMIT = 30;
+
+const newLineRegex = new RegExp(newLineString, 'g');
  
 @Injectable()
 export class MessageService {
@@ -32,6 +34,8 @@ export class MessageService {
 
   public async sendMessage(groupId: string, text: string): Promise<void> {
     const timestamp = Date.now();
+
+    debugger;
 
     this.db.collection('messages').add({
       timestamp,
@@ -61,6 +65,7 @@ export class MessageService {
       return {
         id: doc.id,
         ...message,
+        text: message.text.replace(newLineRegex, newLineString),
       };
     })) as IMessage[];
   }
@@ -103,6 +108,7 @@ export class MessageService {
           return { 
             id,
             ...data,
+            text: data.text.replace(newLineRegex, '\\n'),
           };
         })
         .filter(message => this.currentUsersGroups.includes(message.groupId))

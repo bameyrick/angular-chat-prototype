@@ -23,8 +23,8 @@ export class UserService {
     this.db.collection('users').snapshotChanges().subscribe(async snapshot => {
       const result = {};
 
-      await snapshot.map(async doc => {
-        const data = await doc.payload.doc.data() as IUser;
+      snapshot.forEach(doc => {
+        const data = doc.payload.doc.data() as IUser;
 
         result[doc.payload.doc.id] = {
           ...data,
