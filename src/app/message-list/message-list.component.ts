@@ -26,6 +26,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
   public messages$: Observable<IMessage[]>;
   public users$ = this.userService.users$;
+  public currentUser: string;
 
   private groups$ = this.groupService.allGroups$;
   private groups: IGroup[];
@@ -54,6 +55,8 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
       this.setGroup();
     });
+
+    this.userService.currentUser$.subscribe(id => this.currentUser = id);
   }
 
   ngAfterViewInit() {
@@ -138,5 +141,9 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
   private scrollToBottom(): void {
     setTimeout(() => this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight);
+  }
+
+  private addMessage(event) {
+    console.log(event);
   }
 }

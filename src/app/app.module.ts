@@ -10,6 +10,8 @@ import { UserService } from './services/user.service';
 import { GroupService } from './services/group.service';
 import { MessageService } from './services/message.service';
 
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { AppComponent } from './app.component';
 import { MessageComponent } from './message/message.component';
 import { MessageListComponent } from './message-list/message-list.component';
@@ -31,10 +33,14 @@ const firebaseConfig = {
 };
 
 @NgModule({
-  imports:      [ BrowserModule, FormsModule, AppRoutingModule, AngularFireModule.initializeApp(firebaseConfig), AngularFirestoreModule ],
+  imports:      [ BrowserModule, FormsModule, FontAwesomeModule, AppRoutingModule, AngularFireModule.initializeApp(firebaseConfig), AngularFirestoreModule ],
   exports: [AppRoutingModule],
   declarations: [ AppComponent, MessageComponent, MessageListComponent, MessageFormComponent, ChatListComponent, FilterByPipe, MessageToHtmlPipe, SortByPipe ],
   bootstrap:    [ AppComponent ],
   providers: [MessageService, UserService, GroupService]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private library: FaIconLibrary) {
+    library.addIcons(faEdit, faTrashAlt);
+  }
+ }

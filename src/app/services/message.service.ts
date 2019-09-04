@@ -32,7 +32,7 @@ export class MessageService {
     this.subscribeToNewMessages();
   }
 
-  public async sendMessage(groupId: string, text: string): Promise<void> {
+public async sendMessage(groupId: string, text: string): Promise<void> {
     const timestamp = Date.now();
 
     debugger;
@@ -43,6 +43,23 @@ export class MessageService {
       groupId,
       sender: this.currentUser,
     } as IMessage)
+  }
+
+  public async updateMessage(msgId: string, msgTxt: string): Promise<void> {
+    // const timestamp = Date.now();
+
+    this.db.collection('messages').doc(msgId).update({
+      text: msgTxt,
+    } as IMessage)
+  }
+
+  public async deleteMessage(msgId: string): Promise<void> {
+
+    this.db.collection('messages').doc(msgId).delete().then(function() {
+      console.log("Message successfully deleted!");
+  }).catch(function(error) {
+      console.error("Error removing message: ", error);
+  });
   }
 
   public async loadPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_LIMIT): Promise<void> {
@@ -59,7 +76,7 @@ export class MessageService {
       .limit(limit)
     ).get().toPromise();
 
-    return await Promise.all(snapshot.docs.map(doc => {
+    return await Promise.all(snapshot.docs.map(async doc => {
       const message = doc.data();
       
       return {

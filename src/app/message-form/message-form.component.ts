@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
-import { MessageService } from '../services/message.service'
+import { MessageService } from '../services/message.service';
 
 @Component({
   selector: 'app-message-form',

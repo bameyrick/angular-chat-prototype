@@ -2,9 +2,15 @@
   <header class="MessageList__header">
     <h2 class="MessageList__title">{{ group?.name }}</h2>
   </header>
-  
-  <div #scroller class="MessageList__messages" (scroll)="onScroll($event)">
-    <app-message #messages [attr.id]="message.id" class="MessageList__message" *ngFor="let message of messages$ | async " [message]="message" [user]="(users$ | async)[message.sender]"></app-message>
+
+  <div #scroller class="MessageList__messages"  (scroll)="onScroll($event)">
+    <app-message  #messages [attr.id]="message.id"
+      class="MessageList__message" 
+      *ngFor="let message of messages$ | async " 
+      [message]="message" 
+      [user]="(users$ | async)[message.sender]"
+      [contentEditable]="message.sender === currentUser ? true : false"></app-message>
   </div>
-  <app-message-form class="MessageList__form" (messageSent)="messageSent()"></app-message-form>
+  <app-message-form class="MessageList__form" (messageSent)="messageSent()" ></app-message-form>
+
 </div>
