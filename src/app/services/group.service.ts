@@ -33,7 +33,7 @@ export class GroupService {
     ).toPromise())[0];
   }
 
-  public async getUsersGroup(userId: string): Promise<IGroup> {
+  public async getUserGroup(userId: string): Promise<IGroup> {
     return (await this.userGroups$.pipe(
       skipWhile(groups => groups.length === 0),
       map(groups => groups.filter(group => group.users.includes(userId))),

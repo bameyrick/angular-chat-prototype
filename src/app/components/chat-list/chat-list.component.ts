@@ -54,7 +54,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
   }
 
   private async checkIfRouteIsForCurrentUser(): Promise<void> {
-    const group = await this.groupService.getUsersGroup(this.currentUserId);
+    const group = await this.groupService.getUserGroup(this.currentUserId);
 
     if (group && group.id === this.id) {
       this.router.navigateByUrl('/');

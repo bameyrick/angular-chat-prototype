@@ -7,6 +7,7 @@ import { sortBy } from 'sort-by-typescript';
 import { UserService, GroupService } from '../services';
 import { IMessage } from '../models';
 import { newLineString, newLineRegex } from '../pipes/message-to-html.pipe';
+import { asyncForEach } from '../utils';
 
 const MESSAGE_LIMIT = 30;
 
@@ -72,7 +73,7 @@ export class MessageService {
     const group = await this.groupService.getGroupById(groupId);
 
     if (group.individual) {
-      const userGroup = await this.groupService.getUsersGroup(this.currentUserId);
+      const userGroup = await this.groupService.getUserGroup(this.currentUserId);
 
       const groupSnapshot = this.db.collection('messages', ref => ref
         .where('groupId', '==', groupId)
@@ -159,7 +160,7 @@ export class MessageService {
   }
 
   private updateGroupMessages(groupId: string, messages: IMessage[]) {
-    this.groupMessages[groupId] = messages;
+    this.groupMessages[groupId] = Array.from(new Set(messages));
     this.groupMessages$[groupId].next(messages);
   }
 
@@ -182,19 +183,29 @@ export class MessageService {
     .subscribe(messages => this.handleNewMessages(messages))
   }
 
-  private handleNewMessages(messages: IMessage[]): void {
+  private async handleNewMessages(messages: IMessage[]): Promise<void> {
     const groupMessages: { [key: string]: IMessage[] } = {};
 
-    messages.forEach(message => {
-      if (!groupMessages[message.groupId]) {
-        groupMessages[message.groupId] = [];
-      }
+    await asyncForEach(messages, async message => {
+      this.addMessageToIndex(groupMessages, message.groupId, message);
 
-      groupMessages[message.groupId].push(message);
+      if ((await this.groupService.getGroupById(message.groupId)).individual) {
+        const senderGroup = await this.groupService.getUserGroup(message.sender);
+
+        this.addMessageToIndex(groupMessages, senderGroup.id, message)
+      }
     });
 
     Object.keys(groupMessages).forEach(groupId => {
       this.addMessagesToGroup(groupId, groupMessages[groupId]);
     });
+  }
+
+  private addMessageToIndex(index: { [key: string]: IMessage[] }, groupId: string, message: IMessage): void {
+    if (!index[groupId]) {
+      index[groupId] = [];
+    }
+
+    index[groupId].push(message);
   }
 }
