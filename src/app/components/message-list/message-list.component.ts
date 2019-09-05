@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { GroupService } from '../../services/group.service';
 import { MessageService } from '../../services/message.service';
@@ -32,6 +32,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   private loadingMessages: boolean;
   private previousScrollY: number = 0;
   private firstMessagesLoaded = false;
+  private messagesSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,8 +43,10 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(route => {
+      const previousId = this.id;
       this.id = route.get('id');
-      this.setGroup();
+
+      this.onRouteChange(previousId);
     });
 
     this.groups$.subscribe(groups => {
@@ -56,11 +59,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.scrollToBottom();
-
-    this.renderedMessages.changes.subscribe(() => {
-      this.onListReRender();
-    });
+    this.renderedMessages.changes.subscribe(() => this.onListReRender());
   }
 
   public onScroll(): void {
@@ -74,18 +73,38 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
         this.scrollToMessage = this.oldestMessage;
 
-        this.messageService.loadPreviousMessagesForGroup(this.group.id, this.oldestMessage.timestamp).then(() => {
-          this.loadingMessages = false;
-        });
+        this.messageService.loadPreviousMessagesForGroup(this.group.id, this.oldestMessage.timestamp)
+          .then(() => {
+            this.loadingMessages = false;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else if (scrollDirection === 1 && this.atBottom()) {
+        this.messageService.freeMemoryForGroup(this.group.id);
       }
     }
-
 
     this.previousScrollY = scrollPosition;
   }
 
   public messageSent(): void {
     setTimeout(() => this.scrollToBottom());
+  }
+
+  private onRouteChange(previousId: string): void {
+    this.scrollToMessage = null;
+    this.firstMessagesLoaded = false;
+
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
+
+    if (previousId) {
+      this.messageService.freeMemoryForGroup(previousId);
+    }
+
+    this.setGroup();
   }
 
   private atBottom(): boolean {
@@ -101,9 +120,8 @@ export class MessageListComponent implements OnInit, AfterViewInit {
       this.messages$ = this.messageService.groupMessages$[this.id];
 
       if (this.messages$) {
-        this.messages$.subscribe(messages => {
+        this.messagesSubscription = this.messages$.subscribe(messages => {
           if (messages.length) {
-
             this.oldestMessage = messages[0];
             this.newestMessage = messages[messages.length - 1];
 
@@ -137,9 +155,5 @@ export class MessageListComponent implements OnInit, AfterViewInit {
 
   private scrollToBottom(): void {
     setTimeout(() => this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight);
-  }
-
-  private addMessage(event) {
-    console.log(event);
   }
 }

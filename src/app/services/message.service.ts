@@ -7,9 +7,10 @@ import { sortBy } from 'sort-by-typescript';
 import { UserService, GroupService } from '../services';
 import { IMessage } from '../models';
 import { newLineString, newLineRegex } from '../pipes/message-to-html.pipe';
-import { asyncForEach } from '../utils';
+import { asyncForEach, removeDuplicateObjectsFromArray } from '../utils';
 
-const MESSAGE_LIMIT = 30;
+const MESSAGE_RETRIEVE_LIMIT = 30;
+const MESSAGE_STORE_LIMIT = 100;
 
 @Injectable()
 export class MessageService {
@@ -59,17 +60,25 @@ export class MessageService {
     this.updateGroupMessages(groupId, this.groupMessages[groupId].filter(message => message.id !== messageId));
   }
 
-  public async loadPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_LIMIT): Promise<void> {
+  public async loadPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_RETRIEVE_LIMIT): Promise<void> {
     const messages = await this.getPreviousMessagesForGroup(groupId, before, limit);
 
     this.addMessagesToGroup(groupId, messages);
+  }
+
+  public freeMemoryForGroup(groupId): void {
+    const messages = this.groupMessages[groupId]
+      .sort(sortBy('timestamp'))
+      .slice(this.groupMessages[groupId].length - MESSAGE_STORE_LIMIT, this.groupMessages[groupId].length);
+
+    this.updateGroupMessages(groupId, messages);
   }
 
   private sanitiseMessageText(message: string): string {
     return message.trim().replace(/[\n\r]/g, newLineString);
   }
 
-  private async getPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_LIMIT): Promise<IMessage[]> {
+  private async getPreviousMessagesForGroup(groupId: string, before: number = Date.now(), limit = MESSAGE_RETRIEVE_LIMIT): Promise<IMessage[]> {
     const group = await this.groupService.getGroupById(groupId);
 
     if (group.individual) {
@@ -152,7 +161,7 @@ export class MessageService {
   }
 
   private addMessagesToGroup(groupId: string, messages: IMessage[]) {
-    const newMessages = Array.from(new Set([...this.groupMessages[groupId], ...messages])).sort(sortBy('timestamp'));
+    const newMessages = removeDuplicateObjectsFromArray<IMessage>([...this.groupMessages[groupId], ...messages]).sort(sortBy('timestamp'));
 
     if (newMessages.map(message => message.id).join('') !== this.groupMessages[groupId].map(message => message.id).join('')) {
       this.updateGroupMessages(groupId, newMessages);
@@ -160,8 +169,9 @@ export class MessageService {
   }
 
   private updateGroupMessages(groupId: string, messages: IMessage[]) {
-    this.groupMessages[groupId] = Array.from(new Set(messages));
-    this.groupMessages$[groupId].next(messages);
+    this.groupMessages[groupId] = removeDuplicateObjectsFromArray<IMessage>(messages);
+
+    this.groupMessages$[groupId].next(this.groupMessages[groupId]);
   }
 
   private subscribeToNewMessages(): void {
