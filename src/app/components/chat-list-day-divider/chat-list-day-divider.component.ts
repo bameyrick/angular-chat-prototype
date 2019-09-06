@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import * as moment from 'moment';
+
 import { IMessage } from 'src/app/models';
 
 @Component({
@@ -19,5 +21,10 @@ export class ChatListDayDividerComponent {
     const previousMessageDate = new Date(this.messages[this.index - 1].timestamp).getDate();
 
     return previousMessageDate < thisMessageDate;
+  }
+
+  public isToday(): boolean {
+    const format = 'DDMMYYY';
+    return moment(this.messages[this.index].timestamp).format(format) === moment(Date.now()).format(format);
   }
 }
