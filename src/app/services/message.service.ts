@@ -245,25 +245,29 @@ export class MessageService {
     index[groupId].push(message);
   }
 
-  private updateUnreadCounts(): void {
+  private async updateUnreadCounts(): Promise<void> {
     const result = {};
     let totalUnread = 0;
 
-    Object.keys(this.groupMessages).forEach(key => {
-      let lastReadTime = this.groupLastReads[key];
+    const currentUserGroup = await this.groupService.getUserGroup(this.currentUserId);
 
-      const groupMessages = this.groupMessages[key];
+    Object.keys(this.groupMessages)
+      .filter(groupId => groupId !== currentUserGroup.id)
+      .forEach(groupId => {
+        let lastReadTime = this.groupLastReads[groupId];
 
-      if (groupMessages.length && !lastReadTime) {
-        lastReadTime = this.groupLastReads[key] = groupMessages[groupMessages.length - 1].timestamp;
-      }
+        const groupMessages = this.groupMessages[groupId];
 
-      const count = groupMessages.filter(message => message.timestamp > lastReadTime).length;
+        if (!lastReadTime) {
+          lastReadTime = this.groupLastReads[groupId] = groupMessages.length ? groupMessages[groupMessages.length - 1].timestamp : Date.now();
+        }
 
-      totalUnread += count;
+        const count = groupMessages.filter(message => message.timestamp > lastReadTime).length;
 
-      result[key] = count;
-    });
+        totalUnread += count;
+
+        result[groupId] = count;
+      });
 
     this.groupUnreadCounts$.next(result);
 
