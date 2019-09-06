@@ -1,6 +1,6 @@
 <div class="Message">
   <div class="Message__icon">
-    <img *ngIf="user.img" src="{{ user.img }}" [attr.alt]="user.displayName" class="Message__avatar">
+    <div *ngIf="user.img" [ngStyle]="{ 'background-image': 'url(' + user.img + ')' }" class="Message__avatar"></div>
     <div *ngIf="!user.img" class="Message__initials" [ngStyle]="{ 'background-color': '#' + user.colour }">{{ user.initials }}</div>
   </div>
   <div class="Message__main">
