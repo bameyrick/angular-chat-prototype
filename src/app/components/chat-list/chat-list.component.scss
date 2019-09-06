@@ -9,12 +9,6 @@
     @include list-reset;
   }
 
-  &__item {
-    &:not(:last-child) {
-      margin: 0 0 .5em;
-    }
-  }
-
   &__link {
     color: $color-grey;
 

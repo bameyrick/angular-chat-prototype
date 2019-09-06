@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, ViewEncapsulation, ViewChild, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 import { MessageService } from '../../services/message.service';
 import { IMessage, IUser } from '../../models';
 import { TextareaInputComponent } from '../../shared/textarea-input/textarea-input.component';
@@ -16,16 +16,20 @@ export class MessageComponent implements OnChanges {
   @Input() user: IUser;
   @Input() contentEditable: boolean;
   @Input() groupId: string;
-  @ViewChild(TextareaInputComponent,  { static: false}) myTextarea: any;
+
+  @ViewChild(TextareaInputComponent, { static: false }) textarea: TextareaInputComponent;
 
   public isEditing = false;
   public editableMessage: string;
 
-  constructor(private messageService: MessageService) { }
+  private observingVisibility = false;
+
+  constructor(private elementRef: ElementRef, private messageService: MessageService) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (didChange(changes.message)) {
       this.editableMessage = this.message.text.replace(newLineRegex, '\n');
+      setTimeout(() => this.observeVisibility());
     }
   }
 
@@ -33,7 +37,7 @@ export class MessageComponent implements OnChanges {
     this.isEditing = true;
   }
 
-  public delete(message: IMessage): void {
+  public delete(): void {
     this.messageService.deleteMessage(this.groupId, this.message.id);
   }
 
@@ -46,6 +50,24 @@ export class MessageComponent implements OnChanges {
 
     this.isEditing = false;
 
-    this.myTextarea.reset();
+    this.textarea.reset();
+  }
+
+  private observeVisibility(): void {
+    if (!this.observingVisibility) {
+      this.observingVisibility = true;
+
+      const observer = new IntersectionObserver(entries => this.onScrollIntoView(entries), {
+        root: this.elementRef.nativeElement.parentElement,
+      });
+
+      observer.observe(this.elementRef.nativeElement);
+    }
+  }
+
+  private onScrollIntoView(entries: IntersectionObserverEntry[]): void {
+    if (entries[0].isIntersecting) {
+      this.messageService.setLastReadMessageDateForGroup(this.groupId, this.message.timestamp);
+    }
   }
 }

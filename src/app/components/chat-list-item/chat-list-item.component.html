@@ -1,0 +1,4 @@
+<li class="ChatListItem">
+  <a class="ChatListItem__link" [ngClass]="{ 'ChatListItem__link--current': current }" [routerLink]="['/chat', chat.id]">{{ chat.name }}</a>
+  <app-notification-count class="ChatListItem__unread" [number]="unreadCount"></app-notification-count>
+</li>

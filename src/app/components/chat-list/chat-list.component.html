@@ -2,15 +2,11 @@
   <app-user-selector></app-user-selector>
   <h2 class="ChatList__heading">Groups</h2>
   <ul class="ChatList__items">
-    <li class="ChatList__item" *ngFor="let chat of groupChats$ | async | sortBy: 'name^'">
-      <a class="ChatList__link" [ngClass]="{ 'ChatList__link--current': chat.id === id }" [routerLink]="['/chat', chat.id]">{{ chat.name }}</a>
-    </li>
+    <app-chat-list-item [chat]="chat" [current]="chat.id === id" [unreadCount]="(unreadCounts$ | async)[chat.id]" *ngFor="let chat of groupChats$ | async | sortBy: 'name^'"></app-chat-list-item>
   </ul>
 
   <h2 class="ChatList__heading">Users</h2>
   <ul class="ChatList__items">
-    <li class="ChatList__item" *ngFor="let chat of userChats$ | async | doesNotInclude: 'users' : (currentUserId$ | async) | sortBy: 'name^'">
-      <a class="ChatList__link" [ngClass]="{ 'ChatList__link--current': chat.id === id }" [routerLink]="['/chat', chat.id]">{{ chat.name }}</a>
-    </li>
+    <app-chat-list-item [chat]="chat" [current]="chat.id === id" [unreadCount]="(unreadCounts$ | async)[chat.id]" *ngFor="let chat of userChats$ | async | doesNotInclude: 'users' : (currentUserId$ | async) | sortBy: 'name^'"></app-chat-list-item>
   </ul>
 </div>

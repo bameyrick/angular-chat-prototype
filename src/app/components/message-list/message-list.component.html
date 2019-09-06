@@ -5,14 +5,13 @@
 
   <div #scroller class="MessageList__messages"  (scroll)="onScroll($event)">
     <app-message  #messages [attr.id]="message.id"
-      class="MessageList__message" 
-      *ngFor="let message of messages$ | async " 
-      [message]="message" 
+      class="MessageList__message"
+      *ngFor="let message of messages$ | async"
+      [message]="message"
       [user]="(users$ | async)[message.sender]"
       [contentEditable]="message.sender === currentUser ? true : false"
       [groupId]="group?.id"
     ></app-message>
   </div>
-  <app-message-form class="MessageList__form" (messageSent)="messageSent()" ></app-message-form>
-
+  <app-message-form class="MessageList__form"></app-message-form>
 </div>

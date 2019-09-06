@@ -1,0 +1,28 @@
+@import '../../styles/_variables-and-helpers';
+
+$chat-list-item-unread-size: 2em;
+
+.ChatListItem {
+  :host:not(:last-child) & {
+    margin: 0 0 .5em;
+  }
+
+  display: flex;
+  align-items: center;
+
+  &__link {
+    color: $color-grey;
+
+    &--current {
+      color: $color-white;
+      font-weight: bold;
+    }
+  }
+
+  &__unread {
+    display: inline-block;
+    margin: 0 0 0 $spacing / 2;
+    font-size: .7em;
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,45 @@
+@import '../../styles/_variables-and-helpers';
+
+$chat-list-item-unread-size: 2em;
+
+.NotificationCount {
+  display: inline-block;
+  width: $chat-list-item-unread-size;
+  height: $chat-list-item-unread-size;
+
+  background: $color-green;
+
+  border-radius: 50%;
+
+  font-weight: bold;
+  line-height: $chat-list-item-unread-size;
+  text-align: center;
+
+  pointer-events: none;
+
+  transform: scale(0);
+
+  &--visible {
+    animation: {
+      name: sscale-easeInElastic;
+      duration: 1s;
+      fill-mode: forwards;
+    }
+  }
+
+  &--hidden {
+    animation: {
+      name: scale-easeOutElastic;
+      duration: 1s;
+      fill-mode: forwards;
+    }
+  }
+
+  &--animate {
+    animation: {
+      name: scale-growElastic;
+      duration: 1s;
+      fill-mode: forwards;
+    }
+  }
+}

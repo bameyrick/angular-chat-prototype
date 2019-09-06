@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivationEnd } from '@angular/router';
 
-import { GroupService, UserService } from '../../services';
+import { GroupService, UserService, MessageService } from '../../services';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -14,6 +14,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
   public groupChats$ = this.groupService.groups$;
   public userChats$ = this.groupService.userGroups$;
   public currentUserId$ = this.userService.currentUserId$;
+  public unreadCounts$ = this.messageService.groupUnreadCounts$;
 
   private subscriptions: Subscription[];
   private currentUserId: string;
@@ -21,6 +22,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
   constructor(
     private groupService: GroupService,
     private userService: UserService,
+    private messageService: MessageService,
     private router: Router,
   ) { }
 

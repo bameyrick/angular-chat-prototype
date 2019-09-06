@@ -14,12 +14,15 @@ const MESSAGE_STORE_LIMIT = 100;
 
 @Injectable()
 export class MessageService {
-  public groupMessages$:  { [key: string]: BehaviorSubject<IMessage[]> } = {};
+  public groupMessages$: { [key: string]: BehaviorSubject<IMessage[]> } = {};
   public newMessageSubjects: { [key: string]: Subject<IMessage> };
+  public groupUnreadCounts$ = new BehaviorSubject<{ [key: string]: number }>({});
+  public totalUnreadCount$ = new BehaviorSubject<number>(0);
 
   private currentUsersGroups: string[] = [];
   private groupMessages: { [key: string]: IMessage[] } = {};
   private currentUserId: string;
+  private groupLastReads: { [key: string]: number } = {};
 
   constructor(
     private db: AngularFirestore,
@@ -32,14 +35,18 @@ export class MessageService {
   }
 
   public async sendMessage(groupId: string, text: string): Promise<void> {
-    const timestamp = Date.now();
+    text = this.sanitiseMessageText(text);
 
-    this.db.collection('messages').add({
-      timestamp,
-      text: this.sanitiseMessageText(text),
-      groupId,
-      sender: this.currentUserId,
-    } as IMessage)
+    if (text) {
+      const timestamp = Date.now();
+
+      this.db.collection('messages').add({
+        timestamp,
+        text,
+        groupId,
+        sender: this.currentUserId,
+      } as IMessage);
+    }
   }
 
   public async updateMessage(groupId: string, messageId: string, text: string): Promise<void> {
@@ -64,6 +71,18 @@ export class MessageService {
     const messages = await this.getPreviousMessagesForGroup(groupId, before, limit);
 
     this.addMessagesToGroup(groupId, messages);
+  }
+
+  public setLastReadMessageDateForGroup(groupId: string, timestamp: number): void {
+    if (this.groupLastReads[groupId] === undefined) {
+      this.groupLastReads[groupId] = 0;
+    }
+
+    if (timestamp > this.groupLastReads[groupId]) {
+      this.groupLastReads[groupId] = timestamp;
+    }
+
+    this.updateUnreadCounts();
   }
 
   public freeMemoryForGroup(groupId): void {
@@ -132,8 +151,13 @@ export class MessageService {
     this.userService.currentUserId$.subscribe(id => {
       this.currentUserId = id;
 
+      this.resetUnreadMessages();
       this.updateUserGroupMessages();
     });
+  }
+
+  private resetUnreadMessages(): void {
+    this.groupLastReads = {};
   }
 
   private async updateUserGroupMessages(): Promise<void> {
@@ -158,20 +182,6 @@ export class MessageService {
         }
       });
     });
-  }
-
-  private addMessagesToGroup(groupId: string, messages: IMessage[]) {
-    const newMessages = removeDuplicateObjectsFromArray<IMessage>([...this.groupMessages[groupId], ...messages]).sort(sortBy('timestamp'));
-
-    if (newMessages.map(message => message.id).join('') !== this.groupMessages[groupId].map(message => message.id).join('')) {
-      this.updateGroupMessages(groupId, newMessages);
-    }
-  }
-
-  private updateGroupMessages(groupId: string, messages: IMessage[]) {
-    this.groupMessages[groupId] = removeDuplicateObjectsFromArray<IMessage>(messages);
-
-    this.groupMessages$[groupId].next(this.groupMessages[groupId]);
   }
 
   private subscribeToNewMessages(): void {
@@ -211,11 +221,52 @@ export class MessageService {
     });
   }
 
+  private addMessagesToGroup(groupId: string, messages: IMessage[]) {
+    const newMessages = removeDuplicateObjectsFromArray<IMessage>([...this.groupMessages[groupId], ...messages]).sort(sortBy('timestamp'));
+
+    if (newMessages.map(message => message.id).join('') !== this.groupMessages[groupId].map(message => message.id).join('')) {
+      this.updateGroupMessages(groupId, newMessages);
+    }
+  }
+
+  private updateGroupMessages(groupId: string, messages: IMessage[]) {
+    this.groupMessages[groupId] = removeDuplicateObjectsFromArray<IMessage>(messages);
+
+    this.groupMessages$[groupId].next(this.groupMessages[groupId]);
+
+    setTimeout(() => this.updateUnreadCounts());
+  }
+
   private addMessageToIndex(index: { [key: string]: IMessage[] }, groupId: string, message: IMessage): void {
     if (!index[groupId]) {
       index[groupId] = [];
     }
 
     index[groupId].push(message);
+  }
+
+  private updateUnreadCounts(): void {
+    const result = {};
+    let totalUnread = 0;
+
+    Object.keys(this.groupMessages).forEach(key => {
+      let lastReadTime = this.groupLastReads[key];
+
+      const groupMessages = this.groupMessages[key];
+
+      if (groupMessages.length && !lastReadTime) {
+        lastReadTime = this.groupLastReads[key] = groupMessages[groupMessages.length - 1].timestamp;
+      }
+
+      const count = groupMessages.filter(message => message.timestamp > lastReadTime).length;
+
+      totalUnread += count;
+
+      result[key] = count;
+    });
+
+    this.groupUnreadCounts$.next(result);
+
+    this.totalUnreadCount$.next(totalUnread);
   }
 }

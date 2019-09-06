@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -10,20 +12,20 @@ import { UserService } from './services/user.service';
 import { GroupService } from './services/group.service';
 import { MessageService } from './services/message.service';
 
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { MessageComponent } from './components/message/message.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
 import { MessageFormComponent } from './components/message-form/message-form.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { UserSelectorComponent } from './components/user-selector/user-selector.component';
+import { ChatListItemComponent } from './components/chat-list-item/chat-list-item.component';
+import { NotificationCountComponent } from './components/notification-count/notification-count.component';
 
 import { FilterByPipe } from './pipes/filter-by.pipe';
 import { MessageToHtmlPipe } from './pipes/message-to-html.pipe';
 import { SortByPipe } from './pipes/sort-by.pipe';
 import { DoesNotIncludePipe } from './pipes/does-not-include.pipe';
-import { UserSelectorComponent } from './components/user-selector/user-selector.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCEwBcOwZ8FIDvIfEjmS0r5jgLnjwSqxLU",
@@ -36,14 +38,43 @@ const firebaseConfig = {
 };
 
 @NgModule({
-  imports:      [ BrowserModule, FormsModule, SharedModule, FontAwesomeModule, AppRoutingModule, AngularFireModule.initializeApp(firebaseConfig), AngularFirestoreModule ],
-  exports: [AppRoutingModule],
-  declarations: [ AppComponent, MessageComponent, MessageListComponent, MessageFormComponent, ChatListComponent, FilterByPipe, MessageToHtmlPipe, SortByPipe, DoesNotIncludePipe, UserSelectorComponent ],
-  bootstrap:    [ AppComponent ],
-  providers: [MessageService, UserService, GroupService]
+  imports: [
+    BrowserModule,
+    FormsModule,
+    SharedModule,
+    FontAwesomeModule,
+    AppRoutingModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFirestoreModule
+  ],
+  exports: [
+    AppRoutingModule
+  ],
+  declarations: [
+    AppComponent,
+    MessageComponent,
+    MessageListComponent,
+    MessageFormComponent,
+    ChatListComponent,
+    FilterByPipe,
+    MessageToHtmlPipe,
+    SortByPipe,
+    DoesNotIncludePipe,
+    UserSelectorComponent,
+    ChatListItemComponent,
+    NotificationCountComponent
+  ],
+  bootstrap: [
+    AppComponent
+  ],
+  providers: [
+    MessageService,
+    UserService,
+    GroupService,
+  ],
 })
 export class AppModule {
-  constructor(private library: FaIconLibrary) {
+  constructor(library: FaIconLibrary) {
     library.addIcons(faEdit, faTrashAlt);
   }
- }
+}

@@ -102,6 +102,13 @@
     "@angular-devkit/core" "7.0.7"
     rxjs "6.3.3"
 
+"@angular/animations@^8.2.5":
+  version "8.2.5"
+  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-8.2.5.tgz#847296d12690c1e385f6f790fbb472d0e4aabde9"
+  integrity sha512-t4TT11YIRGKSNYz5ngZ7trVPKZMtEql2LaPaVQnAZ6Cefrf+1s431mVh7ndPtGTLxRwr6RPTUe+Tc+5e2ROcmg==
+  dependencies:
+    tslib "^1.9.0"
+
 "@angular/cli@~7.0.2":
   version "7.0.7"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-7.0.7.tgz#0f4500c5fcf22694c9c40f14d2a5b3dc90fbb4a3"
@@ -572,6 +579,11 @@
     rxjs "6.3.3"
     semver "5.5.1"
     semver-intersect "1.4.0"
+
+"@types/debounce@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/debounce/-/debounce-1.2.0.tgz#9ee99259f41018c640b3929e1bb32c3dcecdb192"
+  integrity sha512-bWG5wapaWgbss9E238T0R6bfo5Fh3OkeoSt245CM7JJwVwpw6MEBCbIxLq5z8KzsE3uJhzcIuQkyiZmzV3M/Dw==
 
 "@types/jasmine@*":
   version "3.4.0"
@@ -2227,6 +2239,11 @@ date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
   integrity sha1-6vQ5/U1ISK105cx9vvIAZyueNFs=
+
+debounce@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.0.tgz#44a540abc0ea9943018dc0eaa95cce87f65cd131"
+  integrity sha512-mYtLl1xfZLi1m4RtQYlZgJUNQjl4ZxVnHzIR8nLLgi4q1YT8o/WM+MK/f8yfcc9s5Ir5zRaPZyZU6xs1Syoocg==
 
 debug@*, debug@^4.1.0, debug@^4.1.1:
   version "4.1.1"
