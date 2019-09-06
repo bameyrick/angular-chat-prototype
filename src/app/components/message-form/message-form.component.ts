@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 export class MessageFormComponent implements OnInit, OnDestroy {
   @ViewChild(TextareaInputComponent,  {static: false}) myTextarea: any;
 
-  @Output() messageSent = new EventEmitter();
+  @Output() messageSent = new EventEmitter<string>();
 
   public message: string;
 
@@ -32,10 +32,10 @@ export class MessageFormComponent implements OnInit, OnDestroy {
     this.routesSubscription.unsubscribe();
   }
 
-  public send() {
-    this.messageService.sendMessage(this.id, this.message);
+  public async send(): Promise<void> {
+    const messageId = await this.messageService.sendMessage(this.id, this.message);
 
-    this.messageSent.emit();
+    this.messageSent.emit(messageId);
 
     this.myTextarea.reset();
   }

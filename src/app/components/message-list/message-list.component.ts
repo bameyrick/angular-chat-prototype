@@ -28,7 +28,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
   private groups: IGroup[];
   private oldestMessage: IMessage;
   private newestMessage: IMessage;
-  private scrollToMessage: IMessage;
+  private scrollToMessageId: string;
   private loadingMessages: boolean;
   private previousScrollY: number = 0;
   private firstMessagesLoaded = false;
@@ -86,7 +86,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (scrollDirection === -1 && scrollPosition <= 0) {
         this.loadingMessages = true;
 
-        this.scrollToMessage = this.oldestMessage;
+        this.scrollToMessageId = this.oldestMessage.id;
 
         this.messageService.loadPreviousMessagesForGroup(this.group.id, this.oldestMessage.timestamp)
           .then(() => {
@@ -103,8 +103,14 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.previousScrollY = scrollPosition;
   }
 
+  public messageSent(messageId: string): void {
+    this.scrollToMessageId = messageId;
+
+    this.onListReRender();
+  }
+
   private onRouteChange(previousId: string): void {
-    this.scrollToMessage = null;
+    this.scrollToMessageId = null;
     this.firstMessagesLoaded = false;
 
     if (this.messagesSubscription) {
@@ -142,8 +148,8 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.oldestMessage = messages[0];
         this.newestMessage = messages[messages.length - 1];
 
-        if (!this.scrollToMessage && (!this.firstMessagesLoaded || this.atBottom()) || this.newestMessage.sender === this.currentUserId) {
-          this.scrollToMessage = this.newestMessage;
+        if (!this.scrollToMessageId && (!this.firstMessagesLoaded || this.atBottom())) {
+          this.scrollToMessageId = this.newestMessage.id;
         }
 
         this.firstMessagesLoaded = true;
@@ -152,10 +158,10 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onListReRender(): void {
-    if (this.scrollToMessage && !this.programaticallyScrolling) {
-      const messageElement = document.getElementById(this.scrollToMessage.id);
+    if (this.scrollToMessageId && !this.programaticallyScrolling) {
+      const messageElement = document.getElementById(this.scrollToMessageId);
 
-      this.scrollToMessage = null;
+      this.scrollToMessageId = null;
 
       if (messageElement) {
         const scrollContainer = this.scrollContainer.nativeElement;

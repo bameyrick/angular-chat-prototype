@@ -34,18 +34,20 @@ export class MessageService {
     this.subscribeToNewMessages();
   }
 
-  public async sendMessage(groupId: string, text: string): Promise<void> {
+  public async sendMessage(groupId: string, text: string): Promise<string> {
     text = this.sanitiseMessageText(text);
 
     if (text) {
       const timestamp = Date.now();
 
-      this.db.collection('messages').add({
+      const doc = await this.db.collection('messages').add({
         timestamp,
         text,
         groupId,
         sender: this.currentUserId,
       } as IMessage);
+
+      return doc.id;
     }
   }
 

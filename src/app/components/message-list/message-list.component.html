@@ -15,5 +15,5 @@
       ></app-message>
     </ng-container>
   </div>
-  <app-message-form class="MessageList__form"></app-message-form>
+  <app-message-form class="MessageList__form" (messageSent)="messageSent($event)"></app-message-form>
 </div>
