@@ -15,6 +15,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
   public userChats$ = this.groupService.userGroups$;
   public currentUserId$ = this.userService.currentUserId$;
   public unreadCounts$ = this.messageService.groupUnreadCounts$;
+  public totalUnreadCount$ = this.messageService.totalUnreadCount$;
 
   private subscriptions: Subscription[];
   private currentUserId: string;

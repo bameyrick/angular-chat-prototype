@@ -1,4 +1,5 @@
 <div class="ChatList">
+  <app-notification-count class="ChatList__total-notifications" [number]="totalUnreadCount$ | async"></app-notification-count>
   <app-user-selector></app-user-selector>
   <h2 class="ChatList__heading">Groups</h2>
   <ul class="ChatList__items">

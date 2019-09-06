@@ -1,6 +1,15 @@
 @import '../../styles/_variables-and-helpers';
 
 .ChatList {
+  position: relative;
+
+  &__total-notifications {
+    position: absolute;
+    top: -$spacing;
+    right: -$spacing;
+    transform: translate(50%, -50%);
+  }
+
   &__heading {
     font-size: 1.2em;
   }
