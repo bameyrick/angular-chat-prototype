@@ -11,7 +11,6 @@
   flex-direction: column;
   flex: 1 1 auto;
 
-
   &__header {
     margin: 0;
     border-bottom: 1px solid $color-borders;
@@ -24,7 +23,7 @@
 
   &__messages {
     flex: 1 1 auto;
-    padding: $spacing 0;
+    padding: $spacing $spacing $spacing 0;
     overflow: auto;
   }
 

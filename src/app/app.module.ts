@@ -26,6 +26,8 @@ import { FilterByPipe } from './pipes/filter-by.pipe';
 import { MessageToHtmlPipe } from './pipes/message-to-html.pipe';
 import { SortByPipe } from './pipes/sort-by.pipe';
 import { DoesNotIncludePipe } from './pipes/does-not-include.pipe';
+import { ChatListDayDividerComponent } from './components/chat-list-day-divider/chat-list-day-divider.component';
+import { MomentPipe } from './pipes/moment.pipe';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCEwBcOwZ8FIDvIfEjmS0r5jgLnjwSqxLU",
@@ -62,7 +64,9 @@ const firebaseConfig = {
     DoesNotIncludePipe,
     UserSelectorComponent,
     ChatListItemComponent,
-    NotificationCountComponent
+    NotificationCountComponent,
+    ChatListDayDividerComponent,
+    MomentPipe
   ],
   bootstrap: [
     AppComponent

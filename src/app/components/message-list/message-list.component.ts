@@ -77,7 +77,6 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.messageService.freeMemoryForGroup(this.group.id);
   }
 
-
   public onScroll(): void {
     const scrollPosition = this.scrollContainer.nativeElement.scrollTop;
 
@@ -168,10 +167,6 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.scrollToPosition(scrollPosition + top - scrollContainerTop - 20);
       }
     }
-  }
-
-  private scrollToBottom(): void {
-    setTimeout(() => this.scrollToPosition(this.scrollContainer.nativeElement.scrollHeight));
   }
 
   private scrollToPosition(position: number): void {

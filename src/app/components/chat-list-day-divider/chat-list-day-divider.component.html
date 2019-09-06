@@ -1,0 +1,3 @@
+<div class="ChatListDayDivider" *ngIf="shouldRender()">
+  <div class="ChatListDayDivider__date">{{ messages[index].timestamp | moment: 'dddd, Do MMMM' }}</div>
+</div>

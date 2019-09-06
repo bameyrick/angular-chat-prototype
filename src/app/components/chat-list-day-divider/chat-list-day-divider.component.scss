@@ -1,0 +1,20 @@
+@import '../../styles/_variables-and-helpers';
+
+.ChatListDayDivider {
+  display: flex;
+  align-items: center;
+  margin: $spacing 0;
+
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    flex: 1 1 auto;
+    height: 1px;
+    background: $color-borders;
+  }
+
+  &__date {
+    margin: 0 $spacing;
+  }
+}

@@ -4,14 +4,16 @@
   </header>
 
   <div #scroller class="MessageList__messages"  (scroll)="onScroll($event)">
-    <app-message  #messages [attr.id]="message.id"
-      class="MessageList__message"
-      *ngFor="let message of messages$ | async"
-      [message]="message"
-      [user]="(users$ | async)[message.sender]"
-      [contentEditable]="message.sender === currentUser ? true : false"
-      [groupId]="group?.id"
-    ></app-message>
+    <ng-container *ngFor="let message of messages$ | async; let index = index;">
+      <app-chat-list-day-divider [index]="index" [messages]="messages$ | async"></app-chat-list-day-divider>
+      <app-message  #messages [attr.id]="message.id"
+        class="MessageList__message"
+        [message]="message"
+        [user]="(users$ | async)[message.sender]"
+        [contentEditable]="message.sender === currentUser ? true : false"
+        [groupId]="group?.id"
+      ></app-message>
+    </ng-container>
   </div>
   <app-message-form class="MessageList__form"></app-message-form>
 </div>

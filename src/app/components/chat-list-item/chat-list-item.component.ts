@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IGroup } from 'src/app/models';
 
 @Component({
@@ -6,14 +6,8 @@ import { IGroup } from 'src/app/models';
   templateUrl: './chat-list-item.component.html',
   styleUrls: ['./chat-list-item.component.scss']
 })
-export class ChatListItemComponent implements OnInit {
+export class ChatListItemComponent {
   @Input() chat: IGroup;
   @Input() current: boolean;
   @Input() unreadCount: number;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
 }

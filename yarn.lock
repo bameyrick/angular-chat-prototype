@@ -102,13 +102,6 @@
     "@angular-devkit/core" "7.0.7"
     rxjs "6.3.3"
 
-"@angular/animations@^8.2.5":
-  version "8.2.5"
-  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-8.2.5.tgz#847296d12690c1e385f6f790fbb472d0e4aabde9"
-  integrity sha512-t4TT11YIRGKSNYz5ngZ7trVPKZMtEql2LaPaVQnAZ6Cefrf+1s431mVh7ndPtGTLxRwr6RPTUe+Tc+5e2ROcmg==
-  dependencies:
-    tslib "^1.9.0"
-
 "@angular/cli@~7.0.2":
   version "7.0.7"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-7.0.7.tgz#0f4500c5fcf22694c9c40f14d2a5b3dc90fbb4a3"
@@ -606,6 +599,13 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.0.tgz#719551d2352d301ac8b81db732acb6bdc28dbdef"
   integrity sha512-1w52Nyx4Gq47uuu0EVcsHBxZFJgurQ+rTKS3qMHxR1GY2T8c2AJYd6vZoZ9q1rupaDjU0yT+Jc2XTyXkjeMA+Q==
+
+"@types/moment@^2.13.0":
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/@types/moment/-/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"
+  integrity sha1-YE69GJvDvDShVIaJQE5hoqSqyJY=
+  dependencies:
+    moment "*"
 
 "@types/node@^10.1.0":
   version "10.14.17"
@@ -5030,6 +5030,11 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
   dependencies:
     minimist "0.0.8"
+
+moment@*, moment@^2.24.0:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
