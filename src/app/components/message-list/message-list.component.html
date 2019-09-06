@@ -10,7 +10,7 @@
         class="MessageList__message"
         [message]="message"
         [user]="(users$ | async)[message.sender]"
-        [contentEditable]="message.sender === currentUser ? true : false"
+        [contentEditable]="message.sender === currentUserId ? true : false"
         [groupId]="group?.id"
       ></app-message>
     </ng-container>

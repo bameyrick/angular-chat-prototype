@@ -22,7 +22,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public messages$: Observable<IMessage[]>;
   public users$ = this.userService.users$;
-  public currentUser: string;
+  public currentUserId: string;
 
   private groups$ = this.groupService.allGroups$;
   private groups: IGroup[];
@@ -61,7 +61,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.setGroup();
     });
 
-    this.currentUserSubscription = this.userService.currentUserId$.subscribe(id => this.currentUser = id);
+    this.currentUserSubscription = this.userService.currentUserId$.subscribe(id => this.currentUserId = id);
   }
 
   ngAfterViewInit() {
@@ -142,7 +142,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.oldestMessage = messages[0];
         this.newestMessage = messages[messages.length - 1];
 
-        if (!this.scrollToMessage && (!this.firstMessagesLoaded || this.atBottom())) {
+        if (!this.scrollToMessage && (!this.firstMessagesLoaded || this.atBottom()) || this.newestMessage.sender === this.currentUserId) {
           this.scrollToMessage = this.newestMessage;
         }
 
@@ -152,7 +152,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onListReRender(): void {
-    if (this.scrollToMessage) {
+    if (this.scrollToMessage && !this.programaticallyScrolling) {
       const messageElement = document.getElementById(this.scrollToMessage.id);
 
       this.scrollToMessage = null;
@@ -174,8 +174,6 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.scrollContainer.nativeElement.scrollTop = position;
 
-    setTimeout(() => {
-      this.programaticallyScrolling = false;
-    });
+    setTimeout(() =>  this.programaticallyScrolling = false);
   }
 }
