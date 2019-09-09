@@ -16,13 +16,13 @@ $message-form-input-height: 2.5em;
     height: $message-form-input-height;
     max-height: $message-form-input-height * 3;
     resize: none;
-    margin-right: 10px;
+    margin-right: $spacing / 2;
     font-size: 1em;
   }
 
   &__textarea {
     flex: 1 0 auto;
-    margin-right: 10px;
+    margin-right: $spacing / 2;
   }
 
   &__button {

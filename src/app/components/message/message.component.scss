@@ -66,7 +66,7 @@ $message-form-input-height: 2.5em;
   &__editmode {
     display: grid;
     grid-template-rows: 1fr auto;
-    grid-row-gap: 10px;
+    grid-row-gap: $spacing / 2;
   }
 
   &__editbuttons {
@@ -76,7 +76,7 @@ $message-form-input-height: 2.5em;
   &__editbutton {
     @extend .Button;
 
-    margin-right: 10px;
+    margin-right: $spacing / 2;
   }
 
   &__deleteButton {
